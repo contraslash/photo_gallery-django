@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        {% for element in list %}
+            <div class="col s12 m4">
+                <div class="card">
+
+                        <div class="card-title black-text">
+                            <a href="{% url element.url_name element.slug %}">{{ element.name }}</a>
+
+                        </div>
+                        {% if element.description%}
+                            <div class="card-content">
+                                {{ element.description }}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}
+                </div>
+                <div class="row">
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div style="position: relative;">
+      <div class="fixed-action-btn horizontal" style="position: absolute; display: inline-block; right: 24px;">
+        <a class="btn-floating btn-large red" href="{% url 'photo_gallery:create_album' %}">
+          <i class="large material-icons">add</i>
+        </a>
+      </div>
+    </div>
+{% endblock %}
