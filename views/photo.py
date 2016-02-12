@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django import http
 from django.template.loader import get_template
 from django.utils.text import slugify
 from django.core.urlresolvers import reverse_lazy
@@ -22,16 +22,19 @@ class Create(base_views.BaseCreateView):
         print self.kwargs
         try:
             self.album = photo_gallery_models.Album.objects.get(slug=self.kwargs.get('album_slug', 0))
-            return super(Create, self).dispatch(request, *args, **kwargs)
+            if request.user.has_perm('photo_gallery.add_photo'):
+                return super(Create, self).dispatch(request, *args, **kwargs)
+            else:
+                return http.HttpResponseForbidden(get_template("403.html").render())
         except photo_gallery_models.Album.DoesNotExist:
-            return HttpResponseNotFound(get_template("404.html").render())
+            return http.HttpResponseNotFound(get_template("404.html").render())
 
     def form_valid(self, form):
         photo = form.save(commit=False)
         photo.slug = slugify(utils.generate_random_string(5)+photo.name)
         photo.album_fk = self.album
         photo.save()
-        return HttpResponseRedirect(
+        return http.HttpResponseRedirect(
             reverse_lazy(
                 photo_gallery_conf.NAMESPACE+":"+photo_gallery_conf.LIST_PHOTO_URL_NAME,
                 kwargs={
@@ -51,7 +54,7 @@ class List(base_views.BaseGridView):
             self.album = photo_gallery_models.Album.objects.get(slug=self.kwargs.get('album_slug', 0))
             return super(List, self).dispatch(request, *args, **kwargs)
         except photo_gallery_models.Album.DoesNotExist:
-            return HttpResponseNotFound(get_template("404.html").render())
+            return http.HttpResponseNotFound(get_template("404.html").render())
 
     def get_context_data(self, **kwargs):
         context = super(List, self).get_context_data(**kwargs)

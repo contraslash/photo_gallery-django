@@ -13,12 +13,12 @@ from . import conf as photo_gallery_conf
 # Create your models here.
 
 
-class Album(base_models.FullBaseModel):
+class Album(base_models.FullSlugBaseModel):
     url_name = photo_gallery_conf.NAMESPACE+":"+photo_gallery_conf.LIST_PHOTO_URL_NAME
 
 
 
-class Photo(base_models.FullBaseModel):
+class Photo(base_models.FullSlugBaseModel):
 
     url_name = photo_gallery_conf.NAMESPACE+":"+photo_gallery_conf.DETAIL_PHOTO_URL_NAME
 
