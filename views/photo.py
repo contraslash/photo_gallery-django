@@ -44,6 +44,39 @@ class Create(base_views.BaseCreateView):
         )
 
 
+class CreateMultiple(base_views.BaseCreateView):
+    form_class = photo_gallery_model_forms.MultiplePhoto
+    album = None
+    template_name = "photo_gallery/photos/create_multiple.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        print self.kwargs
+        try:
+            self.album = photo_gallery_models.Album.objects.get(slug=self.kwargs.get('album_slug', 0))
+            if request.user.has_perm('photo_gallery.add_photo'):
+                return super(CreateMultiple, self).dispatch(request, *args, **kwargs)
+            else:
+                return http.HttpResponseForbidden(get_template("403.html").render())
+        except photo_gallery_models.Album.DoesNotExist:
+            return http.HttpResponseNotFound(get_template("404.html").render())
+
+    def form_valid(self, form):
+        print form
+        photo = form.save(commit=False)
+        photo.slug = slugify(utils.generate_random_string(5)+photo.name)
+        photo.album_fk = self.album
+        photo.save()
+        return http.HttpResponseRedirect(
+            reverse_lazy(
+                photo_gallery_conf.NAMESPACE+":"+photo_gallery_conf.LIST_PHOTO_URL_NAME,
+                kwargs={
+                    'album_slug': self.album.slug
+                }
+            )
+        )
+
+
+
 class List(base_views.BaseGridView):
     template_name = "photo_gallery/photos/list.html"
     album = None

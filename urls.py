@@ -14,6 +14,7 @@ urlpatterns = [
         album_views.Create.as_view(),
         name=photo_gallery_conf.CREATE_ALBUM_URL_NAME
     ),
+
     url(
         r'^(?P<album_slug>[\w-]+)/$',
         photo_views.List.as_view(),
@@ -23,5 +24,10 @@ urlpatterns = [
         r'^(?P<album_slug>[\w-]+)/create/$',
         photo_views.Create.as_view(),
         name=photo_gallery_conf.CREATE_PHOTO_URL_NAME
+    ),
+    url(
+        r'^(?P<album_slug>[\w-]+)/create-multiple/$',
+        photo_views.CreateMultiple.as_view(),
+        name=photo_gallery_conf.CREATE_MULTIPLE_PHOTO_URL_NAME
     ),
 ]

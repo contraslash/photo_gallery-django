@@ -46,3 +46,11 @@ class Photo(forms.ModelForm):
                 'class': 'materialize-textarea',
             }),
         }
+
+class MultiplePhoto(forms.ModelForm):
+
+    class Meta:
+        model = photo_gallery_models.Photo
+        fields = (
+            'image',
+        )

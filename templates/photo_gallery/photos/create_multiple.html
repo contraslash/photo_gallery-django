@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load input_checker %}
+{% load staticfiles %}
+{% block specific-css %}
+    <link rel="stylesheet" href="{% static 'photo_gallery/dropzone/dropzone.css' %}"/>
+{% endblock %}
+{% block content %}
+    <form method="POST" enctype="multipart/form-data" class="dropzone" action="." id="dropzone_form">
+        {% csrf_token %}
+
+    </form>
+{% endblock %}
+{% block specific-js %}
+    <script type="application/javascript" src="{% static 'photo_gallery/dropzone/dropzone.js' %}"></script>
+    <script type="application/javascript">
+        Dropzone.options.dropzoneForm = {
+            paramName: "image"
+        }
+    </script>
+{% endblock %}
