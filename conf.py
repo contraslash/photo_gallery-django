@@ -9,3 +9,5 @@ CREATE_PHOTO_URL_NAME = "create_photo"
 CREATE_MULTIPLE_PHOTO_URL_NAME = "create_multiple_photo"
 LIST_PHOTO_URL_NAME = "list_photo"
 DETAIL_PHOTO_URL_NAME = "detail_photo"
+
+IMAGE_FIELD_NAME = "photo_gallery_image"

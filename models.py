@@ -23,22 +23,21 @@ class Photo(base_models.FullSlugBaseModel):
     url_name = photo_gallery_conf.NAMESPACE+":"+photo_gallery_conf.DETAIL_PHOTO_URL_NAME
 
     album_fk = models.ForeignKey(Album)
-    image = models.ImageField(upload_to='upload_images')
+    photo_image = models.ImageField(upload_to='upload_images')
     thumbnail_100 = models.ImageField(upload_to='upload_images', blank=True, null=True)
-
     def create_thumbnail(self):
         # original code for this method came from
         # http://snipt.net/danfreak/generate-thumbnails-in-django-with-pil/
 
         # If there is no image associated with this.
         # do not create thumbnail
-        if not self.image:
+        if not self.photo_image:
             return
 
         # Set our max thumbnail size in a tuple (max width, max height)
         THUMBNAIL_SIZE = (100, 100)
 
-        DJANGO_TYPE = self.image.file.content_type
+        DJANGO_TYPE = self.photo_image.file.content_type
 
         PIL_TYPE = ""
         FILE_EXTENSION = ""
@@ -51,7 +50,7 @@ class Photo(base_models.FullSlugBaseModel):
             FILE_EXTENSION = 'png'
 
         # Open original photo which we want to thumbnail using PIL's Image
-        image = Image.open(StringIO(self.image.read()))
+        image = Image.open(StringIO(self.photo_image.read()))
 
         # We use our PIL Image object to create the thumbnail, which already
         # has a thumbnail() convenience method that contrains proportions.
@@ -66,7 +65,7 @@ class Photo(base_models.FullSlugBaseModel):
 
         # Save image to a SimpleUploadedFile which can be saved into
         # ImageField
-        suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
+        suf = SimpleUploadedFile(os.path.split(self.photo_image.name)[-1],
                 temp_handle.read(), content_type=DJANGO_TYPE)
         # Save SimpleUploadedFile into image field
         self.thumbnail_100.save(

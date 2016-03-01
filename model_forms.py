@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from . import models as photo_gallery_models
+from . import conf as photo_gallery_conf
 
 
 class Album(forms.ModelForm):
@@ -32,12 +33,12 @@ class Photo(forms.ModelForm):
         fields = (
             'name',
             'description',
-            'image'
+            'photo_image',
         )
         labels = {
             'name': _('Name'),
             'description': _('Description'),
-            'image': _('Photo'),
+            'photo_image': _('Photo'),
         }
 
         widgets = {
@@ -52,5 +53,5 @@ class MultiplePhoto(forms.ModelForm):
     class Meta:
         model = photo_gallery_models.Photo
         fields = (
-            'image',
+            'photo_image',
         )
