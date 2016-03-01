@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
+from django.db import IntegrityError
 
 from base import views as base_views
 
@@ -31,8 +32,12 @@ class Create(base_views.BaseCreateView):
 
     def form_valid(self, form):
         album = form.save(commit=False)
-        album.slug = slugify(utils.generate_random_string(4)+album.name)
-        album.save()
+        try:
+            album.slug = slugify(album.name)
+            album.save()
+        except IntegrityError:
+            album.slug = slugify(album.name + " " + utils.generate_random_string(4))
+            album.save()
         return http.HttpResponseRedirect(
             reverse_lazy(
                 photo_gallery_conf.NAMESPACE+":"+photo_gallery_conf.LIST_ALBUM_URL_NAME
